@@ -1,0 +1,372 @@
+% Advanced proof template
+% Compile with: (XeLaTeX or LuaLaTeX recommended for unicode-math)
+%   xelatex main.tex
+% or (pdfLaTeX)
+%   pdflatex main.tex
+% If using minted, enable --shell-escape (optional)
+
+\RequirePackage{iftex}
+\documentclass[12pt,oneside]{book}
+
+% -------------------------
+% Encoding and fonts
+% -------------------------
+\usepackage[utf8]{inputenc} % safe for pdfLaTeX; ignored by Xe/Lua
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Engine-specific math font support
+\ifXeTeX
+  \usepackage{fontspec}
+  \usepackage{unicode-math}
+  \setmainfont{TeX Gyre Termes}
+  \setmathfont{TeX Gyre Termes Math}
+\else\ifLuaTeX
+  \usepackage{fontspec}
+  \usepackage{unicode-math}
+  \setmainfont{TeX Gyre Termes}
+  \setmathfont{TeX Gyre Termes Math}
+\else
+  % pdfLaTeX fallback
+  \usepackage{amsfonts,amssymb}
+  \usepackage{mathrsfs}
+\fi\fi
+
+% -------------------------
+% Core math and theorem packages
+% -------------------------
+\usepackage{amsmath,amsthm,mathtools}
+\usepackage{amssymb}
+\usepackage{stmaryrd} % extra symbols
+\usepackage{esint}    % extended integrals
+\usepackage{bm}       % bold math symbols
+\usepackage{nicefrac} % slanted fractions
+
+% -------------------------
+% Theorem styles
+% -------------------------
+\usepackage{thmtools}
+\usepackage{thm-restate} % optional
+\declaretheoremstyle[
+  headfont=\bfseries,
+  notefont=\normalfont,
+  bodyfont=\normalfont,
+  qed=\qedsymbol,
+  headpunct={.}
+]{mystyle}
+
+\declaretheorem[style=mystyle,numberwithin=chapter]{theorem}
+\declaretheorem[style=mystyle,sibling=theorem]{lemma}
+\declaretheorem[style=mystyle,sibling=theorem]{proposition}
+\declaretheorem[style=mystyle,sibling=theorem]{corollary}
+\declaretheorem[style=mystyle,numbered=no]{remark}
+\declaretheorem[style=mystyle,numbered=no]{example}
+\declaretheorem[style=mystyle,numberwithin=chapter]{definition}
+\declaretheorem[style=mystyle,numberwithin=chapter]{exercise}
+
+% Proof environments: amsthm proof is available; we add variants
+\usepackage{etoolbox}
+\newenvironment{proofsketch}{\begin{proof}[Proof sketch]}{\end{proof}}
+\newenvironment{proofidea}{\begin{proof}[Idea of proof]}{\end{proof}}
+
+% Subproof environment for case analysis
+\usepackage{chngcntr}
+\newcounter{subproof}
+\newenvironment{subproof}[1][]
+  {\refstepcounter{subproof}\par\noindent\textbf{Subproof \thesubproof.}%
+   \ifstrempty{#1}{}{\ \textit{(#1)}}\quad\ignorespaces}
+  {\hfill$\square$\par}
+
+% Boxed proof environment using mdframed
+\usepackage[framemethod=TikZ]{mdframed}
+\newmdenv[
+  skipabove=6pt,
+  skipbelow=6pt,
+  leftmargin=0pt,
+  rightmargin=0pt,
+  innerleftmargin=8pt,
+  innerrightmargin=8pt,
+  backgroundcolor=gray!6,
+  linecolor=black!30,
+  linewidth=0.5pt
+]{boxedproof}
+
+% -------------------------
+% Cross-referencing and TOC
+% -------------------------
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Advanced Proofs Template},
+  pdfauthor={}
+}
+\usepackage{cleveref}
+\setcounter{tocdepth}{2} % include up to subsections in TOC
+\setcounter{secnumdepth}{3}
+
+% Optional mini-TOC per chapter
+\usepackage{minitoc}
+\dominitoc % initialize
+\mtcsettitle{minitoc}{Contents of this chapter}
+
+% -------------------------
+% Graphics and plotting
+% -------------------------
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,positioning,graphs,graphs.standard}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{tkz-graph} % graph utilities
+
+% -------------------------
+% Algorithms
+% -------------------------
+\usepackage{algorithm}
+\usepackage{algpseudocode} % algorithmicx style
+% alternative: algorithm2e
+\usepackage[ruled,vlined]{algorithm2e}
+
+% -------------------------
+% Misc utilities
+% -------------------------
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{bookmark}
+\usepackage{xcolor}
+\usepackage{todonotes} % for notes during drafting
+
+% -------------------------
+% Custom macros
+% -------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\defeq}{\vcentcolon=}
+
+% QED variants
+\newcommand{\qedwhite}{\hfill\ensuremath{\square}}
+\newcommand{\qedblack}{\hfill\ensuremath{\blacksquare}}
+
+% -------------------------
+% Document metadata
+% -------------------------
+\title{Advanced Proofs and Mathematical Writing}
+\author{Author Name}
+\date{\today}
+
+% -------------------------
+% Document start
+% -------------------------
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+\listoffigures
+\listoftables
+\mainmatter
+
+% Example chapter with minitoc
+\chapter{Foundations}
+\minitoc
+
+\section{Notation and conventions}
+We use standard notation: $\N$ for natural numbers, $\R$ for real numbers, etc.
+
+\section{Sample theorem and proof types}
+
+\begin{theorem}[Basic inequality]
+Let $a,b\in\R$. Then $(a-b)^2\ge 0$ and hence $a^2+b^2\ge 2ab$.
+\end{theorem}
+\begin{proof}
+Expand $(a-b)^2$ to get $a^2-2ab+b^2\ge 0$, rearrange to obtain the result.
+\end{proof}
+
+% -------------------------
+% Proof by contrapositive
+% -------------------------
+\begin{theorem}
+If $n^2$ is even then $n$ is even.
+\end{theorem}
+\begin{proof}[Proof by contrapositive]
+We prove the contrapositive: if $n$ is odd then $n^2$ is odd. Write $n=2k+1$ and compute $n^2=4k^2+4k+1=2(2k^2+2k)+1$, which is odd.
+\end{proof}
+
+% -------------------------
+% Proof by contradiction
+% -------------------------
+\begin{theorem}
+There are infinitely many primes.
+\end{theorem}
+\begin{proof}[Proof by contradiction]
+Assume finitely many primes $p_1,\dots,p_k$. Consider $N=\prod_{i=1}^k p_i +1$. Then $N$ is not divisible by any $p_i$, contradiction.
+\end{proof}
+
+% -------------------------
+% Proof by induction
+% -------------------------
+\begin{theorem}
+For all $n\in\N$, $\sum_{k=1}^n k = n(n+1)/2$.
+\end{theorem}
+\begin{proof}[Proof by induction]
+Base $n=1$ holds. Assume true for $n$, then for $n+1$:
+
+
+\[
+\sum_{k=1}^{n+1} k = \frac{n(n+1)}{2} + (n+1) = \frac{(n+1)(n+2)}{2}.
+\]
+
+
+Thus holds for all $n$.
+\end{proof}
+
+% -------------------------
+% Case analysis and subproofs
+% -------------------------
+\begin{theorem}
+Let $x\in\R$. Then $x^2\ge 0$.
+\end{theorem}
+\begin{proof}
+We consider cases.
+\begin{itemize}
+  \item If $x\ge 0$ then $x^2\ge 0$ trivially.
+  \item If $x<0$ then let $y=-x>0$. Then $x^2=y^2\ge 0$.
+\end{itemize}
+\end{proof}
+
+% -------------------------
+% Constructive proof example
+% -------------------------
+\begin{theorem}
+There exists an irrational number $x$ such that $x^x$ is rational.
+\end{theorem}
+\begin{proof}[Constructive proof]
+Consider $x=\sqrt{2}$. If $\sqrt{2}^{\sqrt{2}}$ is rational we are done. Otherwise let $y=\sqrt{2}^{\sqrt{2}}$ which is irrational; then $y^{\sqrt{2}}=2$ is rational.
+\end{proof}
+
+% -------------------------
+% Proof sketch and boxed proof
+% -------------------------
+\begin{theorem}
+A sample boxed proof
+\end{theorem}
+\begin{boxedproof}
+This is a proof placed inside a shaded box for emphasis. Use this style for long or important proofs.
+\end{boxedproof}
+
+% -------------------------
+% Algorithms
+% -------------------------
+\chapter{Algorithms and Computation}
+\section{Pseudocode example}
+\begin{algorithm}
+\caption{Euclid's algorithm for gcd}
+\begin{algorithmic}[1]
+\Procedure{GCD}{$a,b$}
+  \While{$b\neq 0$}
+    \State $t\gets b$
+    \State $b\gets a \bmod b$
+    \State $a\gets t$
+  \EndWhile
+  \State \textbf{return} $a$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\section{Algorithm2e example}
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwIn{$a,b\in\mathbb{N}$}
+\KwOut{$\gcd(a,b)$}
+\While{$b\neq 0$}{
+  $t\leftarrow b$\;
+  $b\leftarrow a \bmod b$\;
+  $a\leftarrow t$\;
+}
+\Return $a$\;
+\caption{Euclid using algorithm2e}
+\end{algorithm}
+
+% -------------------------
+% Graphs and plots
+% -------------------------
+\chapter{Graphs and Plots}
+\section{TikZ graph example}
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[vertex/.style={circle,draw,inner sep=1.5pt}]
+  \node[vertex] (A) at (0,0) {A};
+  \node[vertex] (B) at (2,0) {B};
+  \node[vertex] (C) at (1,1.5) {C};
+  \draw[-{Stealth}] (A) -- (B);
+  \draw[-{Stealth}] (B) -- (C);
+  \draw[-{Stealth}] (C) -- (A);
+\end{tikzpicture}
+\caption{Directed triangle}
+\end{figure}
+
+\section{pgfplots example}
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+    axis lines=middle,
+    xlabel=$x$, ylabel=$y$,
+    domain=-2:2, samples=201,
+    width=0.6\textwidth
+  ]
+    \addplot[blue,thick] {x^3 - x};
+    \addplot[red,domain=-2:2] {sin(deg(x))};
+    \legend{$x^3-x$,$\sin x$}
+  \end{axis}
+\end{tikzpicture}
+\caption{Sample plots}
+\end{figure}
+
+% -------------------------
+% Exotic math examples
+% -------------------------
+\chapter{Advanced Math Typesetting}
+\section{Commutative diagrams and special symbols}
+Use \verb|\mathscr| for script letters and \verb|\llbracket\rrbracket| from stmaryrd for interval notation.
+
+
+\[
+\mathscr{F}:\; 0 \to A \xrightarrow{f} B \xrightarrow{g} C \to 0
+\]
+
+
+
+
+\[
+\llbracket a,b\rrbracket = \{x\in\Z: a\le x\le b\}
+\]
+
+
+
+% -------------------------
+% Appendix and exercises
+% -------------------------
+\appendix
+\chapter{Appendix}
+\section{Useful identities}
+
+
+\[
+\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}.
+\]
+
+
+
+\backmatter
+\chapter{Exercises Solutions}
+% ... solutions here
+
+\end{document}
