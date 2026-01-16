@@ -41,6 +41,7 @@
 \usepackage{esint}    % extended integrals
 \usepackage{bm}       % bold math symbols
 \usepackage{nicefrac} % slanted fractions
+\usepackage{stmaryrd} % provides \llbracket and \rrbracket
 
 % -------------------------
 % Theorem styles
@@ -127,7 +128,7 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode} % algorithmicx style
 % alternative: algorithm2e
-\usepackage[ruled,vlined]{algorithm2e}
+% \usepackage[ruled,vlined]{algorithm2e}
 
 % -------------------------
 % Misc utilities
@@ -145,6 +146,7 @@
 % -------------------------
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\eps}{\varepsilon}
 \newcommand{\abs}[1]{\left\lvert#1\right\rvert}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
@@ -280,19 +282,19 @@ This is a proof placed inside a shaded box for emphasis. Use this style for long
 \end{algorithmic}
 \end{algorithm}
 
-\section{Algorithm2e example}
-\begin{algorithm}[H]
-\SetAlgoLined
-\KwIn{$a,b\in\mathbb{N}$}
-\KwOut{$\gcd(a,b)$}
-\While{$b\neq 0$}{
-  $t\leftarrow b$\;
-  $b\leftarrow a \bmod b$\;
-  $a\leftarrow t$\;
-}
-\Return $a$\;
-\caption{Euclid using algorithm2e}
-\end{algorithm}
+% \section{Algorithm2e example}
+% \begin{algorithm}[H]
+% \SetAlgoLined
+% \KwIn{$a,b\in\mathbb{N}$}
+% \KwOut{$\gcd(a,b)$}
+% \While{$b\neq 0$}{
+%   $t\leftarrow b$\;
+%   $b\leftarrow a \bmod b$\;
+%   $a\leftarrow t$\;
+% }
+% \Return $a$\;
+% \caption{Euclid using algorithm2e}
+% \end{algorithm}
 
 % -------------------------
 % Graphs and plots
